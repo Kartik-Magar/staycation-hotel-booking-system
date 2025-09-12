@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <%- include('../partials/head') %>
+</head>
+<body class="bg-gradient-to-br from-blue-100 via-yelow-100 to-white py-0 flex flex-col min-h-screen">
+    <%- include('../partials/nav') %>
+
+
+    <main class="flex-grow flex flex-col items-center justify-center py-12 px-6">
+        <!-- Page Heading -->
+        <h1 class="text-6xl font-extrabold text-red-700 mb-8 drop-shadow-lg">🏡 Home Details</h1>
+
+        <!-- Home Detail Card -->
+        <div class="bg-[#1B1B1B] bg-opacity-80 shadow-2xl rounded-2xl overflow-hidden border border-red-300 w-full max-w-4xl transform hover:scale-105 transition-transform duration-300">
+            <!-- House Image -->
+            <img src="/<%= home.photo %>" alt="House Image" class="w-full h-80 object-cover">
+
+            <!-- House Details -->
+            <div class="p-8">
+                <h2 class="text-5xl font-bold text-yellow-400 text-center mb-4"><%= home.houseName %></h2>
+
+                <!-- Details Section -->
+                <div class="mt-6 pt-6 space-y-4 text-lg">
+                    <p class="text-gray-100">📍 <strong class="text-red-600">Location:</strong> <%= home.location %></p>
+                    <p class="text-gray-100">⭐ <strong class="text-red-600">Rating:</strong> <%= home.rating %> / 5</p>
+                    <p class="text-gray-100">💰 <strong class="text-red-600">Price:</strong> 
+                        <span class="text-yellow-400 font-bold text-xl">₹ <%= home.price %></span> per night
+                    </p>
+                </div>
+
+                <!-- Divider Line -->
+                <hr class="my-8 border-white">
+
+                <div class="border-b pb-4 mb-6">
+                    <h3 class="text-2xl font-semibold text-gray-300 mb-2">Description</h3>
+                    <p class="text-gray-100 whitespace-pre-line"><%= home.description %></p>
+
+                </div>
+
+
+                <!-- Buttons Section -->
+                <div class="flex justify-center gap-6">
+                <% if(user && user.usertype === "guest"){ %>
+                    <a href="/book/<%= home._id %>" 
+                        class="bg-green-600 hover:bg-green-800 text-white font-bold py-4 px-8 rounded-xl text-xl shadow-lg transition-all duration-300">
+                        📅 Book Now
+                    </a>
+                 <% } %>
+                    <a href="/homes" 
+                        class="bg-blue-600 hover:bg-blue-900 text-white font-bold py-4 px-6 rounded-xl text-xl shadow-lg transition-all duration-300">
+                        🔙 Back to Listings
+                    </a>
+                    <%- include('../partials/favourite',{ existingFav: existingFav, home: home })%>
+                </div>
+            </div>
+        </div>
+    </main>
+</body>
+</html>

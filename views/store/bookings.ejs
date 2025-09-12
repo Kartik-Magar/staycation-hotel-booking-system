@@ -1,0 +1,38 @@
+<%- include('../partials/head') %>
+<%- include('../partials/nav') %>
+<body class="bg-gradient-to-br from-blue-100 via-yelow-100 to-white py-0 flex flex-col min-h-screen">
+  
+<div class="w-full flex justify-center mt-20">
+  <div class="w-3/4 overflow-x-auto rounded-2xl border border-gray-300 shadow-2xl">
+    <table class="w-full bg-white text-sm text-gray-700">
+      <thead class="bg-gradient-to-r from-gray-500 via-gray-400 to-gray-500 text-white uppercase text-xs tracking-widest shadow-md">
+        <tr>
+          <th class="py-4 px-6 text-left">🏠 House</th>
+          <th class="py-4 px-6 text-left"> ₹ Price/Night</th>
+          <th class="py-4 px-6 text-left">📅 Check-In</th>
+          <th class="py-4 px-6 text-left">📅 Check-Out</th>
+          <th class="py-4 px-6 text-left">💰 Total Price</th>
+        </tr>
+      </thead>
+    <tbody class="bg-[#1B1B1B] bg-opacity-90">
+      <% bookings.forEach(booking => { 
+          if (!booking.homeId || !booking.startDate || !booking.endDate) return;
+
+          const start = new Date(booking.startDate);
+          const end = new Date(booking.endDate);
+          const diffInTime = end.getTime() - start.getTime();
+          const days = Math.ceil(diffInTime / (1000 * 3600 * 24));
+          const total = days * booking.homeId.price;
+      %>
+        <tr class="border-b hover:bg-[#1B1B1B] bg-opacity-100 transition duration-200">
+          <td class="py-3 px-6 font-medium text-green-600"><%= booking.homeId.houseName %></td>
+          <td class="py-3 px-6 text-gray-100">₹ <%= booking.homeId.price %></td>
+          <td class="py-3 px-6 text-gray-100"><%= start.toDateString() %></td>
+          <td class="py-3 px-6 text-gray-100"><%= end.toDateString() %></td>
+          <td class="py-3 px-6 font-semibold text-yellow-400">₹ <%= total %></td>
+        </tr>
+      <% }) %>
+    </tbody>
+  </table>
+</div>
+</body>

@@ -1,0 +1,123 @@
+<%- include('../partials/head') %>
+  </head>
+  <body class="bg-gray-200">
+    <div class="relative z-10 flex flex-col h-full">
+     
+      <!-- ✅ Light Gray Navbar -->
+      <header class="w-full bg-gray-100 text-gray-800 p-2 shadow-lg">
+        <nav class="w-full flex items-center justify-between px-5">
+          <!-- Logo + Links -->
+          <div class="flex items-center space-x-2">
+            <a href="/" class="text-2xl font-bold flex items-center transition text-red-400 hover:text-[#FF0B55] hover:scale-110">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+              </svg>
+              <span class="relative group cursor-pointer">
+                StayCation
+                <span class="absolute bottom-0 left-0 w-full h-0.5 bg-[#FF0B55] scale-x-0 group-hover:scale-x-100 origin-center transition-transform duration-300 ease-out"></span>
+              </span>
+            </a>
+
+            <% if (isLoggedIn) { %>
+              <% if (user && user.userType === "guest") { %>
+                <a href="/homes" class="<%= currentPage === 'home' ? 'bg-red-500' : 'hover:bg-red-600' %> py-2 px-4 text-white rounded-lg transition duration-300">
+                  🏘️ Homes-List
+                </a>
+              <% } else { %>
+                <a href="/host/host-home-list" class="<%= currentPage === 'host-homes' ? 'bg-red-500' : 'hover:bg-red-600' %> py-2 px-4 text-white rounded-lg transition duration-300">
+                  ➕ Listed Homes
+                </a>
+                <a href="/host/add-home" class="<%= currentPage === 'addHome' ? 'bg-red-500' : 'hover:bg-red-600' %> py-2 px-4 text-white rounded-lg transition duration-300">
+                  ➕ Add Home
+                </a>
+              <% } %>
+            <% } %>
+          </div>
+
+          <% if (isLoggedIn && user && user.userType === "guest") { %>
+            <ul class="flex space-x-4">
+              <li>
+                <a href="/favourites" class="<%= currentPage === 'favourites' ? 'bg-red-500' : 'hover:bg-red-600' %> py-2 px-4 text-white rounded-lg transition duration-300">
+                  🎟️ Favourites
+                </a>
+              </li>
+              <li>
+                <a href="/bookings" class="<%= currentPage === 'bookings' ? 'bg-red-500' : 'hover:bg-red-600' %> py-2 px-4 text-white rounded-lg transition duration-300">
+                  🎟️ Bookings
+                </a>
+              </li>
+            </ul>
+          <% } %>
+
+          <div class="flex items-center space-x-4">
+            <% if (!isLoggedIn) { %>
+              <a href="/login" class="bg-red-500 hover:bg-red-600 text-white py-2 px-4 rounded transition duration-300">Login</a>
+              <a href="/signup" class="bg-red-500 hover:bg-red-600 text-white py-2 px-4 rounded transition duration-300">Sign Up</a>
+            <% } else { %>
+              <form action="/logout" method="POST" class="inline">
+                <button type="submit" class="bg-red-500 hover:bg-red-600 text-white py-2 px-4 rounded transition duration-300">
+                  Logout
+                </button>
+              </form>
+            <% } %>
+          </div>
+        </nav>
+      </header>
+
+      <!-- ✅ Animated Login Page with Top Margin -->
+      <div id="pageTransition" class="opacity-0 translate-x-10 transition-all duration-700 ease-in-out transform">
+        <main class="container mx-auto mt-20 p-8 bg-white rounded-lg shadow-md max-w-md">
+          <h1 class="text-3xl font-bold mb-6 text-center text-gray-800">Login</h1>
+          <form action="/login" method="POST" class="mx-auto">
+            <%- include('../partials/errors') %>
+            <div class="mb-4">
+              <label for="email" class="block text-gray-700 text-sm font-bold mb-2">Username or Email:</label>
+              <input type="email" id="email" name="email" placeholder="Email/Username"
+                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                required />
+            </div>
+            <div class="mb-6">
+              <label for="password" class="block text-gray-700 text-sm font-bold mb-2">Password:</label>
+              <input type="password" id="password" name="password" placeholder="Enter Your Password"
+                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline"
+                required />
+            </div>
+            <div class="flex items-center justify-between">
+              <button type="submit"
+                class="w-full bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+                Login
+              </button>
+            </div>
+          </form>
+          <p class="text-center mt-4 text-gray-600">
+            Don't have an account? <a href="/signup" class="text-red-500 hover:underline">Sign up</a>
+          </p>
+        </main>
+      </div>
+
+      <!-- ✅ Page Animation Script -->
+      <script>
+        window.addEventListener('load', () => {
+          const page = document.getElementById('pageTransition');
+          page.classList.remove('opacity-0', 'translate-x-10');
+          page.classList.add('opacity-100', 'translate-x-0');
+        });
+
+        document.querySelectorAll('a[href]').forEach(link => {
+          const url = new URL(link.href, window.location.origin);
+          if (url.origin === window.location.origin && !link.href.includes('#')) {
+            link.addEventListener('click', function (e) {
+              e.preventDefault();
+              const page = document.getElementById('pageTransition');
+              page.classList.remove('opacity-100', 'translate-x-0');
+              page.classList.add('opacity-0', 'translate-x-10');
+              setTimeout(() => {
+                window.location.href = this.href;
+              }, 500);
+            });
+          }
+        });
+      </script>
+  </body>
+</html>

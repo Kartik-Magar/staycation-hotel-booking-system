@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>StayCation - Luxury Vacation Rentals</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    .text-glow { text-shadow: 0 0 10px rgba(255, 255, 255, 0.7); }
+    .bg-overlay { background-color: rgba(0, 0, 0, 0.3); }
+    .bg-overlay-light { background-color: rgba(255, 255, 255, 0.1); }
+    .smooth-transition { transition: all 0.4s ease; }
+    .brightness-hover:hover { filter: brightness(1.2); }
+    .bg-slide {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh; /* Ensure the height covers the full screen */
+  background-size: cover;
+  background-position: center;
+  opacity: 0;
+  animation: bgCycle 15s infinite;
+  transition: opacity 2s ease-in-out, transform 2s ease-in-out;
+}
+    .bg-slide:nth-child(1) { background-image: url('/uploads/bg3.jpeg'); animation-delay: 0s; }
+    .bg-slide:nth-child(2) { background-image: url('/uploads/bghouse1.jpg'); animation-delay: 5s; }
+    .bg-slide:nth-child(3) { background-image: url('/uploads/bghouse2.jpg'); animation-delay: 10s; }
+
+    @keyframes bgCycle {
+      0%, 100% { opacity: 0; transform: scale(1.05); }
+      10%, 30% { opacity: 1; transform: scale(1); }
+      40% { opacity: 0; transform: scale(1.02); }
+    }
+  </style>
+</head>
+<body class="relative text-white min-h-screen overflow-x-hidden">
+
+  <!-- Background Slideshow -->
+  <div class="fixed inset-0 z-0 h-full w-full overflow-hidden">
+    <div class="bg-slide"></div>
+    <div class="bg-slide"></div>
+    <div class="bg-slide"></div>
+    <!-- Lightened gradient to reduce "oily" look -->
+    <div class="absolute inset-0 bg-gradient-to-b from-black/10 to-black/30"></div>
+  </div>
+
+  <div class="relative z-10 flex flex-col min-h-screen">
+    <!-- Navigation -->
+    <nav class="bg-overlay-light backdrop-blur-sm py-4 px-6 border-b border-white/10">
+      <div class="container mx-auto flex justify-between items-center">
+        <a href="/" class="text-2xl font-bold flex items-center smooth-transition text-white hover:text-yellow-300 text-glow hover:scale-110 transition">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+          </svg>
+          <span class="relative group cursor-pointer">
+            StayCation
+            <span class="absolute bottom-0 left-0 w-full h-0.5 bg-yellow-400 scale-x-0 group-hover:scale-x-100 origin-center transition-transform duration-300 ease-out"></span>
+          </span>
+        </a>
+        <div class="hidden md:flex space-x-8 items-center">
+          <% if (isLoggedIn) { %>
+            <% if (user && user.userType === "guest") { %>
+              <div class="hidden md:flex space-x-4">
+                <a href="/homes" class="relative group cursor-pointer text-white text-glow transition-colors duration-300 hover:text-yellow-300">🏡 Explore Homes
+                  <span class="absolute bottom-0 left-0 w-full h-0.5 bg-yellow-400 scale-x-0 group-hover:scale-x-100 origin-center transition-transform duration-300 ease-out"></span>
+                 </a>
+                <a href="/favourites" class="relative group cursor-pointer text-white text-glow transition-colors duration-300 hover:text-yellow-300">💛 Favourites
+                  <span class="absolute bottom-0 left-0 w-full h-0.5 bg-yellow-400 scale-x-0 group-hover:scale-x-100 origin-center transition-transform duration-300 ease-out"></span>
+
+                </a>
+                <a href="/bookings" class="relative group cursor-pointer text-white text-glow transition-colors duration-300 hover:text-yellow-300">🎟️ Bookings
+                  <span class="absolute bottom-0 left-0 w-full h-0.5 bg-yellow-400 scale-x-0 group-hover:scale-x-100 origin-center transition-transform duration-300 ease-out"></span>
+
+                </a>
+              </div>
+            <% } else { %>
+              <a href="/host/host-home-list" class="relative group cursor-pointer text-white text-glow transition-colors duration-300 hover:text-yellow-300">📋 Listed Homes
+                <span class="absolute bottom-0 left-0 w-full h-0.5 bg-yellow-400 scale-x-0 group-hover:scale-x-100 origin-center transition-transform duration-300 ease-out"></span>
+
+              </a>
+              <a href="/host/add-home" class="relative group cursor-pointer text-white text-glow transition-colors duration-300 hover:text-yellow-300">➕ Add Home
+                <span class="absolute bottom-0 left-0 w-full h-0.5 bg-yellow-400 scale-x-0 group-hover:scale-x-100 origin-center transition-transform duration-300 ease-out"></span>
+
+              </a>
+            <% } %>
+          <% } %>
+          <a href="#contact-us" class="relative group cursor-pointer text-white text-glow transition-colors duration-300 hover:text-yellow-300">Contact-Us
+            <span class="absolute bottom-0 left-0 w-full h-0.5 bg-yellow-400 scale-x-0 group-hover:scale-x-100 origin-center transition-transform duration-300 ease-out"></span>
+            
+          </a>
+          <a href="#khfjtd" class="relative group cursor-pointer text-white text-glow transition-colors duration-300 hover:text-yellow-300">Info
+           <span class="absolute bottom-0 left-0 w-full h-0.5 bg-yellow-400 scale-x-0 group-hover:scale-x-100 origin-center transition-transform duration-300 ease-out"></span>
+          </a>
+          <% if (isLoggedIn) { %>
+            <form action="/logout" method="POST" class="inline">
+              <button type="submit" class="relative group cursor-pointer text-white text-glow transition-colors duration-300 hover:text-yellow-300">Logout
+                <span class="absolute bottom-0 left-0 w-full h-0.5 bg-yellow-400 scale-x-0 group-hover:scale-x-100 origin-center transition-transform duration-300 ease-out"></span>
+              </button>
+            </form>
+          <% } %>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <main class="flex-grow flex items-center justify-center p-6">
+      <div class="text-center max-w-4xl bg-overlay p-8 md:p-12 rounded-2xl mt-20">
+        <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 leading-tight">
+          Discover <span class="text-yellow-300">Luxury</span> Vacation Rentals
+        </h1>
+        <p class="text-lg md:text-xl mb-8 max-w-2xl mx-auto text-white/90">
+          Experience world-class accommodations in the most beautiful locations. Your dream getaway starts here.
+        </p>
+
+        <% if (isLoggedIn) { %>
+          <% if (user && user.userType === "guest") { %>
+            <div class="flex flex-col sm:flex-row justify-center gap-5">
+              <a href="/homes"
+                 class="bg-gradient-to-r from-yellow-400 to-yellow-500 hover:from-yellow-500 hover:to-yellow-600 text-black font-bold py-3 px-8 rounded-lg smooth-transition hover:scale-105 hover:shadow-lg brightness-hover">
+                Explore Homes
+              </a>
+              <button
+                onclick="handleRoleSwitch('guest', '/host/host-home-list')"
+                class="bg-white/90 hover:bg-white text-black font-bold py-3 px-8 rounded-lg smooth-transition hover:scale-105 hover:shadow-lg brightness-hover">
+                Become a Host
+              </button>
+            </div>
+          <% } else { %>
+            <div class="flex flex-col sm:flex-row justify-center gap-5">
+              <button
+                onclick="handleRoleSwitch('host', '/homes')"
+                class="bg-gradient-to-r from-yellow-400 to-yellow-500 hover:from-yellow-500 hover:to-yellow-600 text-black font-bold py-3 px-8 rounded-lg smooth-transition hover:scale-105 hover:shadow-lg brightness-hover">
+                Explore Homes
+              </button>
+              <a href="/host/host-home-list"
+                 class="bg-white/90 hover:bg-white text-black font-bold py-3 px-8 rounded-lg smooth-transition hover:scale-105 hover:shadow-lg brightness-hover">
+                My Homes
+              </a>
+            </div>
+          <% } %>
+        <% } else { %>
+          <div class="flex flex-col sm:flex-row justify-center gap-5">
+            <a href="/login"
+               class="bg-white/90 hover:bg-white text-black font-bold py-3 px-8 rounded-lg smooth-transition hover:scale-105 hover:shadow-lg brightness-hover">
+              Login
+            </a>
+            <a href="/signup"
+               class="bg-gradient-to-r from-yellow-400 to-yellow-500 hover:from-yellow-500 hover:to-yellow-600 text-black font-bold py-3 px-8 rounded-lg smooth-transition hover:scale-105 hover:shadow-lg brightness-hover">
+              Sign Up
+            </a>
+          </div>
+        <% } %>
+      </div>
+    </main>
+
+
+      <!-- Divider Border -->
+<!-- Start after fullscreen hero -->
+ 
+<div class="relative z-10 pt-[35vh]">
+</div>
+
+<!-- Gray Divider Border -->
+<div class="relative py-0">
+  <div class="absolute inset-0 bg-gray-500 h-[4px] w-full"></div>
+</div>
+    <!-- Features Section -->
+
+    <section class="bg-gradient-to-br from-blue-100 via-yelow-100 to-white py-16">
+      <div class="max-w-7xl mx-auto px-6">
+          <!-- Section Heading -->
+          <div class="text-center mb-12">
+          <h2 class="text-4xl font-bold text-gray-700 hover:scale-110 transition duration-300 cursor-pointer">Explore Our <span class="text-yellow-500">Top</span> Locations</h2>
+          <p class="text-lg text-gray-600 mt-2">View nearby properties and plan your next unforgettable trip</p>
+          </div>
+      
+          <!-- Flex Content -->
+          <div class="flex flex-col md:flex-row justify-between items-center gap-10">
+          <!-- Left Content -->
+          <div class="md:w-[45%] w-full p-8 bg-gradient-to-r from-gray-300 to-yellow-50 rounded-2xl shadow-xl transition-all duration-300 transform hover:scale-105 hover:shadow-2xl hover:from-blue-100 hover:to-yellow-100">
+              <h3 class="text-3xl font-bold text-gray-800 mb-6 tracking-wide">
+              Discover the Best Locations
+              </h3>
+              <p class="text-lg text-gray-700 mb-6">
+              StayCation offers handpicked luxury vacation rentals located in prime destinations across the globe. Explore the best spots to unwind, relax, and create lasting memories with your loved ones.
+              </p>
+              <p class="text-lg text-gray-700">
+              Check out the map for available properties near you, and start planning your next getaway!
+              </p>
+          </div>
+      
+          <!-- Map -->
+          <div class="md:w-[50%] w-full rounded-2xl overflow-hidden shadow-lg p-6 bg-white">
+              <iframe class="w-full h-[500px] rounded-2xl border-4 border-yellow-300"
+                      src="https://www.openstreetmap.org/export/embed.html?bbox=-74.01,40.70,-73.95,40.78&layer=mapnik"
+                      style="border: 0"
+                      allowfullscreen
+                      loading="lazy">
+              </iframe>
+          </div>
+          </div>
+      </div>
+      </section>
+      
+      <!-- Divider Border -->
+      <div class="relative py-0">
+      <div class="absolute inset-0 bg-gradient-to-r from-blue-300 via-teal-300 to-transparent h-[4px] w-full"></div>
+      </div>
+
+    <!-- Why Choose StayCation Section -->
+    <section class="bg-gradient-to-br from-gray-800 via-gray-700 to-gray-600 py-12">
+      <div class="max-w-7xl mx-auto text-center">
+        <h2 class="text-3xl font-semibold text-yellow-500 mb-8 hover:scale-110 transition duration-300 cursor-pointer hover:text-yellow-400">Why Choose StayCation?</h2>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+          
+          <!-- Card 1 -->
+          <div class="group bg-white p-6 rounded-lg shadow-xl hover:shadow-2xl transform hover:scale-105 transition duration-300 ease-in-out">
+            <div class="inline-block relative">
+              <h3 class="text-xl font-semibold text-green-800 group-hover:text-green-600 transition duration-300 ease-in-out cursor-pointer">
+                Affordable Prices
+              </h3>
+              <span class="absolute bottom-0 left-0 w-full h-0.5 bg-green-600 scale-x-0 group-hover:scale-x-100 origin-left transition-transform duration-300 ease-out "></span>
+            </div>
+            <p class="mt-4 text-gray-600">Find homes that suit your budget and enjoy great deals throughout the year.</p>
+          </div>
+    
+          <!-- Card 2 -->
+          <div class="group bg-white p-6 rounded-lg shadow-xl hover:shadow-2xl transform hover:scale-105 transition duration-300 ease-in-out">
+            <div class="inline-block relative">
+              <h3 class="text-xl font-semibold text-green-800 group-hover:text-green-600 transition duration-300 ease-in-out cursor-pointer">
+                Verified Hosts
+              </h3>
+              <span class="absolute bottom-0 left-0 w-full h-0.5 bg-green-600 scale-x-0 group-hover:scale-x-100 origin-left transition-transform duration-300 ease-out"></span>
+            </div>
+            <p class="mt-4 text-gray-600">All our hosts are carefully verified, ensuring a safe and trustworthy experience.</p>
+          </div>
+    
+          <!-- Card 3 -->
+          <div class="group bg-white p-6 rounded-lg shadow-xl hover:shadow-2xl transform hover:scale-105 transition duration-300 ease-in-out">
+            <div class="inline-block relative">
+              <h3 class="text-xl font-semibold text-green-800 group-hover:text-green-600 transition duration-300 ease-in-out cursor-pointer">
+                Wide Range of Options
+              </h3>
+              <span class="absolute bottom-0 left-0 w-full h-0.5 bg-green-600 scale-x-0 group-hover:scale-x-100 origin-left transition-transform duration-300 ease-out"></span>
+            </div>
+            <p class="mt-4 text-gray-600">From beach houses to city apartments, we offer a variety of accommodation types.</p>
+          </div>
+          
+        </div>
+      </div>
+    </section>
+    
+    
+
+
+    <!-- Footer -->
+    <footer class="bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-white pt-16 pb-10">
+      <div class="max-w-7xl mx-auto px-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-12">
+        
+        <!-- Brand Info -->
+        <div>
+          <h2 class="text-2xl font-bold text-amber-400 mb-4">StayCation</h2>
+          <p class="text-gray-300 text-sm leading-relaxed">
+            Discover extraordinary places to stay. Escape the ordinary with handpicked homes and unforgettable adventures.
+          </p>
+        </div>
+    
+        <!-- Quick Links -->
+        <div>
+          <h3 class="text-xl font-semibold mb-4 text-white">Quick Links</h3>
+          <ul class="space-y-2 text-gray-400 text-sm">
+            <li><a href="#" class="hover:text-amber-400 transition">Home</a></li>
+            <li><a href="#info" class="hover:text-amber-400 transition">About Us</a></li>
+            <li><a href="#contact" class="hover:text-amber-400 transition">Contact</a></li>
+            <li><a href="/login" class="hover:text-amber-400 transition">Login</a></li>
+            <li><a href="/signup" class="hover:text-amber-400 transition">Sign Up</a></li>
+          </ul>
+        </div>
+    
+        <!-- Top Locations -->
+        <div>
+          <h3 class="text-xl font-semibold mb-4 text-white">Top Destinations</h3>
+          <ul class="space-y-2 text-gray-400 text-sm">
+            <li><a href="#" class="hover:text-cyan-400 transition">Maldives</a></li>
+            <li><a href="#" class="hover:text-cyan-400 transition">Bali</a></li>
+            <li><a href="#" class="hover:text-cyan-400 transition">Paris</a></li>
+            <li><a href="#" class="hover:text-cyan-400 transition">New York</a></li>
+            <li><a href="#" class="hover:text-cyan-400 transition">Santorini</a></li>
+          </ul>
+        </div>
+    
+        <!-- Contact & Office Info -->
+        <div>
+          <h3 id="contact-us" class="text-xl font-semibold mb-4 text-white">Contact Us</h3>
+          <ul class="space-y-4 text-gray-400 text-sm">
+            <li class="flex items-start space-x-2">
+              <svg class="h-5 w-5 text-amber-400 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M17.657 16.657L13.414 12.414a4 4 0 10-5.657 5.657l4.243 4.243a8 8 0 1011.314-11.314l-4.243 4.243z" />
+              </svg>
+              <span class="hover:text-cyan-400 transition cursor-pointer">123 Dream Lane, Paradise City, CA 90210</span>
+            </li>
+            <li class="flex items-center space-x-2">
+              <svg class="h-5 w-5 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M16 12a4 4 0 01-8 0m8 0a4 4 0 00-8 0m8 0v1a4 4 0 01-8 0v-1m8 0a4 4 0 00-8 0" />
+              </svg>
+              <span class="hover:text-cyan-400 transition cursor-pointer">support@staycation.com</span>
+            </li>
+            <li class="flex items-center space-x-2">
+              <svg class="h-5 w-5 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M3 5h2l.4 2M7 13h10l4-8H5.4M7 13l-1.6 8H19m-8-8V5m0 0L5 5m14 0h-2" />
+              </svg>
+              <span class="hover:text-cyan-400 transition cursor-pointer">+91-(1800)-5656-9797</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+    
+      <!-- Bottom Bar -->
+      <div class="mt-12 border-t border-white/10 pt-6 text-sm text-center text-gray-400">
+        <div class="flex flex-col md:flex-row justify-between items-center max-w-7xl mx-auto px-6">
+          <p>© 2025 StayCation. All rights reserved.</p>
+          <div class="flex space-x-4 mt-4 md:mt-0">
+            <a href="#" class="hover:text-cyan-400 transition">
+              <!-- Facebook Icon -->
+              <svg class="h-7 w-7" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M22 12a10 10 0 10-11.45 9.95v-7.05H8v-2.9h2.55V9.35c0-2.5 1.5-3.9 3.8-3.9 1.1 0 2.2.2 2.2.2v2.45h-1.25c-1.24 0-1.65.78-1.65 1.58v1.9h2.8l-.45 2.9h-2.35v7.05A10 10 0 0022 12z"/>
+              </svg>
+            </a>
+            <a href="#" class="hover:text-cyan-400 transition">
+              <!-- Twitter Icon -->
+              <svg class="h-7 w-7" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M23.95 4.57a10 10 0 01-2.83.77 4.93 4.93 0 002.17-2.71c-.95.56-2 .97-3.13 1.19A4.92 4.92 0 0016.61 3c-2.73 0-4.94 2.2-4.94 4.92 0 .39.04.77.13 1.13-4.1-.2-7.73-2.16-10.16-5.13a4.87 4.87 0 00-.67 2.48c0 1.7.87 3.2 2.18 4.07a4.9 4.9 0 01-2.23-.62v.06c0 2.38 1.7 4.36 3.95 4.82a4.9 4.9 0 01-2.22.08c.63 1.97 2.45 3.4 4.6 3.45A9.88 9.88 0 012 19.54a13.94 13.94 0 007.56 2.21c9.05 0 14-7.5 14-14v-.63A9.94 9.94 0 0024 4.59z"/>
+              </svg>
+            </a>
+            <a href="#" class="hover:text-cyan-400 transition">
+              <!-- GitHub Icon -->
+              <svg class="h-7 w-7" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M12 2.04c-5.51 0-9.96 4.45-9.96 9.96 0 4.41 2.87 8.17 6.85 9.49.5.09.69-.22.69-.49v-1.7c-2.78.61-3.37-1.34-3.37-1.34-.45-1.15-1.11-1.46-1.11-1.46-.91-.62.07-.61.07-.61 1 .07 1.53 1.03 1.53 1.03.9 1.53 2.36 1.09 2.94.84.09-.65.35-1.09.63-1.34-2.22-.25-4.56-1.11-4.56-4.93 0-1.09.39-1.98 1.03-2.68-.1-.25-.45-1.27.1-2.64 0 0 .84-.27 2.75 1.03a9.6 9.6 0 015 0c1.9-1.3 2.74-1.03 2.74-1.03.56 1.37.21 2.39.1 2.64.64.7 1.03 1.59 1.03 2.68 0 3.83-2.34 4.68-4.57 4.93.36.31.68.93.68 1.87v2.78c0 .27.18.58.7.48a10.02 10.02 0 006.87-9.5c0-5.5-4.46-9.95-9.96-9.95z"/>
+              </svg>
+            </a>
+          </div>
+        </div>
+      </div>
+    </footer>
+    
+  </div>
+
+  <!-- Hidden logout form -->
+  <form id="logoutForm" action="/logout" method="POST" style="display: none;"></form>
+
+  <!-- Role Switch Modal -->
+  <div id="roleModal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/50 backdrop-blur-sm">
+    <div class="bg-white text-black rounded-xl shadow-2xl p-6 max-w-md w-full relative">
+      <h2 class="text-2xl font-semibold mb-4">Want to Switch Account ?</h2>
+      <p id="modalMessage" class="mb-6 text-gray-700">Are you sure you want to switch roles?</p>
+      <div class="flex justify-end gap-4">
+        <button onclick="closeModal()" class="px-4 py-2 rounded-lg bg-gray-200 hover:bg-gray-300">Cancel</button>
+        <button onclick="confirmSwitch()" class="px-4 py-2 rounded-lg bg-yellow-400 hover:bg-yellow-500 text-black font-semibold">Yes, Continue</button>
+      </div>
+      <button onclick="closeModal()" class="absolute top-2 right-2 text-gray-500 hover:text-gray-700">✕</button>
+    </div>
+  </div>
+
+  <!-- JavaScript for role switching -->
+  <script>
+    let redirectAfterConfirm = "";
+
+    function handleRoleSwitch(currentRole, redirectUrl) {
+      const isGuest = currentRole === "guest";
+      const message = isGuest
+        ? "To become a host, you need to switch roles. Logout and continue?"
+        : "To explore homes, you need to switch to a guest account. Logout and continue?";
+
+      document.getElementById("modalMessage").innerText = message;
+      redirectAfterConfirm = redirectUrl;
+      document.getElementById("roleModal").classList.remove("hidden");
+    }
+
+    function closeModal() {
+      document.getElementById("roleModal").classList.add("hidden");
+      redirectAfterConfirm = "";
+    }
+
+    function confirmSwitch() {
+      const form = document.getElementById("logoutForm");
+      const input = document.createElement("input");
+      input.type = "hidden";
+      input.name = "redirectTo";
+      input.value = redirectAfterConfirm;
+      form.appendChild(input);
+      form.submit();
+    }
+    document.querySelector('a[href="#contact-us"]').addEventListener('click', function(e) {
+    e.preventDefault();
+    document.querySelector('#contact-us').scrollIntoView({
+      behavior: 'smooth'
+    });
+  });
+  </script>
+</body>
+</html>

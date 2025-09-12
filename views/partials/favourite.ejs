@@ -1,0 +1,6 @@
+<form action="/favourites<%= existingFav ? '/delete/' + home._id : '' %>" method="post">
+    <button type="submit" class="bg-pink-600 hover:bg-pink-900 text-white font-bold py-4 px-6 rounded-xl text-xl shadow-lg transition-all duration-300">
+        <%= !existingFav ? "Add to Favourite" : "❌ Remove from Favourites" %>
+    </button>
+    <input type="hidden" name="id" value="<%= home._id %>" >
+</form>

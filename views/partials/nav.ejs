@@ -1,0 +1,67 @@
+<header class="w-full bg-[#1B1B1B] bg-opacity-85 text-gray-800 p-2 shadow-2xl">
+  <nav class="w-full flex items-center justify-between px-5">
+    <!-- Logo only on left -->
+    <div class="flex items-center">
+      <a href="/" class="text-2xl font-bold flex items-center transition text-white hover:text-yellow-300 hover:scale-110">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+        </svg>
+        <span class="relative group cursor-pointer">
+          StayCation
+          <span class="absolute bottom-0 left-0 w-full h-0.5 bg-[#FF0B55] scale-x-0 group-hover:scale-x-100 origin-center transition-transform duration-300 ease-out"></span>
+        </span>
+      </a>
+    </div>
+
+    <!-- All navigation buttons moved to right side -->
+    <div class="flex items-center space-x-4">
+      <% if (isLoggedIn) { %>
+        <% if (user && user.userType === "guest") { %>
+          <ul class="flex space-x-4">
+            <li>
+              <a href="/homes" class="relative group cursor-pointer text-yellow-500 font-bold text-glow transition-colors duration-300 hover:text-white">🏡 Explore Homes
+                <!-- <span class="absolute bottom-0 left-0 w-full h-0.5 bg-yellow-400 scale-x-0 group-hover:scale-x-100 origin-center transition-transform duration-300 ease-out"></span> -->
+              </a>
+            </li>
+            <li>
+              <a href="/favourites" class="py-2 px-4 text-yellow-500 rounded-lg font-bold transition duration-300 hover:text-white">
+                💛 Favourites
+              </a>
+            </li>
+            <li>
+              <a href="/bookings" class="py-2 px-4 text-yellow-500 rounded-lg font-bold transition duration-300 hover:text-white">
+                🎟️ Bookings
+              </a>
+            </li>
+          </ul>
+        <% } else { %>
+          <ul class="flex space-x-4">
+            <li>
+              <a href="/host/host-home-list" class="py-2 px-4 text-yellow-400 rounded-lg font-bold transition duration-300 hover:text-white">
+                Listed Homes
+              </a>
+            </li>
+            <li>
+              <a href="/host/add-home" class="py-2 px-4 text-yellow-400 font-bold rounded-lg transition duration-300 hover:text-white">
+                Add Home
+              </a>              
+            </li>
+          </ul>
+        <% } %>
+      <% } %>
+
+      <!-- Login/Logout buttons -->
+      <% if (!isLoggedIn) { %>
+        <a href="/login" class="bg-red-500 hover:bg-red-600 text-white py-2 px-4 rounded font-bold transition duration-300">Login</a>
+        <a href="/signup" class="bg-red-500 hover:bg-red-600 text-white py-2 px-4 rounded font-bold transition duration-300">Sign Up</a>
+      <% } else { %>
+        <form action="/logout" method="POST" class="inline">
+          <button type="submit" class="hover:bg-red-600 text-white py-2 px-4 rounded font-bold transition duration-300">
+            Logout
+          </button>
+        </form>
+      <% } %>
+    </div>
+  </nav>
+</header>

@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <%- include('../partials/head') %>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    function showLoginAlert() {
+    alert("Please login to continue!");
+  }
+    const backgrounds = [
+      "linear-gradient(to right, #ff9a9e, #fad0c4)",
+      "linear-gradient(to right, #a18cd1, #fbc2eb)",
+      "linear-gradient(to right, #84fab0, #8fd3f4)",
+      "linear-gradient(to right, #ffecd2, #fcb69f)",
+      "linear-gradient(to right, #c2e9fb, #a1c4fd)"
+    ];
+
+    let bgIndex = 0;
+    const wrapper = document.getElementById("animatedAddHomeWrapper");
+
+    setInterval(() => {
+      wrapper.style.background = backgrounds[bgIndex];
+      bgIndex = (bgIndex + 1) % backgrounds.length;
+    }, 5000); // Change every 5 seconds
+  </script>
+  <style>
+    @keyframes slideBackground {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    .animated-bg {
+      background: linear-gradient(270deg, #ff6b6b, #fcd34d, #4ade80);
+      background-size: 600% 600%;
+      animation: slideBackground 10s ease infinite;
+    }
+
+    /* Smooth transition for Add Home section */
+    #animatedAddHomeWrapper {
+      transition: background 1s ease-in-out;
+    }
+  </style>
+</head>
+<body class="bg-red-50 text-gray-900 flex flex-col min-h-screen">
+  <%- include('../partials/nav') %>
+
+  <main class="flex-grow">
+
+    <!-- Hero Section -->
+    <section class="relative h-[60vh] bg-cover bg-center flex items-center justify-center" style="background-image: url('/images/hero-bg.jpg');">
+      <div class="text-center text-white z-10">
+        <h1 class="text-5xl font-bold">Rent <span class="text-white font-extrabold">Almost Anything</span></h1>
+        <p class="text-lg mt-2">CONVENIENT ACCESS TO ANY ITEM</p>
+        <div class="mt-6 w-full max-w-2xl mx-auto relative z-10">
+          <div class="rounded-lg overflow-hidden shadow-lg">
+            <div class="animated-bg p-1 rounded-lg">
+              <div class="bg-white rounded-lg flex items-center">
+                <input type="text" placeholder="Search home, category..." class="w-full p-3 rounded-l-lg text-black focus:outline-none" />
+                <button class="bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-r-lg">SEARCH</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <p class="text-sm mt-3">or <a href="/host/add-home" class="text-yellow-300 underline hover:text-yellow-400">List an item</a></p>
+      </div>
+      <div class="absolute inset-0 bg-black opacity-40"></div>
+    </section>
+
+    <!-- Categories Section -->
+    <section class="py-12 px-6 bg-white text-center">
+      <h2 class="text-3xl font-semibold text-gray-800 mb-4">Find Out</h2>
+      <h3 class="text-2xl font-bold text-gray-900 mb-8">Most Popular Categories</h3>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+        <div class="bg-white shadow-lg rounded-lg overflow-hidden">
+          <img src="/images/property.jpg" alt="Properties" class="w-full h-48 object-cover">
+          <div class="p-5">
+            <h4 class="text-xl font-bold">Properties</h4>
+            <p class="text-gray-600 mt-2">$199+</p>
+          </div>
+        </div>
+        <div class="bg-white shadow-lg rounded-lg overflow-hidden">
+          <img src="/images/furniture.jpg" alt="Furnitures" class="w-full h-48 object-cover">
+          <div class="p-5">
+            <h4 class="text-xl font-bold">Furnitures</h4>
+            <p class="text-gray-600 mt-2">$20+</p>
+          </div>
+        </div>
+        <div class="bg-white shadow-lg rounded-lg overflow-hidden">
+          <img src="/images/scooter.jpg" alt="Scooters" class="w-full h-48 object-cover">
+          <div class="p-5">
+            <h4 class="text-xl font-bold">Scooters</h4>
+            <p class="text-gray-600 mt-2">$10+</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Registered Homes Section -->
+    <section class="py-10 px-5">
+      <h1 class="text-4xl font-bold text-center text-red-600">Welcome to Airbnb index page</h1>
+      <h2 class="text-2xl font-semibold mt-3 text-center text-red-700">Here are our registered homes:</h2>
+      <ul class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-6 w-full max-w-6xl mx-auto">
+        <% registerHomes.forEach(home => { %>
+        <li class="bg-white shadow-lg rounded-lg overflow-hidden border border-red-300">
+          <img src="#" alt="House Image" class="w-full h-48 object-cover">
+          <div class="p-5 text-center">
+            <h2 class="text-2xl font-bold text-red-600"><%= home.houseName %></h2>
+            <p class="text-gray-700 mt-2">🌎 Location: <span class="font-semibold"><%= home.location %></span></p>
+            <p class="text-gray-700 mt-1">⭐ Rating: <span class="font-semibold"><%= home.rating %></span>/5</p>
+            <p class="text-gray-800 mt-1">💰 Price: <span class="font-semibold text-red-500">$<%= home.price %></span> per night</p>
+            <button id="bookNowBtn" onclick="showLoginAlert()" class="mt-4 bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+              Book Now
+            </button>
+          </div>
+        </li>
+        <% }) %>
+      </ul>
+
+      <!-- Animated Add Home Button -->
+      <div id="animatedAddHomeWrapper" class="text-center relative overflow-hidden mt-10 p-10 rounded-lg">
+        <a href="/host/add-home" class="relative z-10 inline-block bg-red-500 hover:bg-red-700 text-white font-bold py-3 px-6 rounded-lg text-lg transition">
+          ➕ Add Home
+        </a>
+        <div class="absolute inset-0 bg-black opacity-30 z-0"></div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Background Animation Script -->
+
+</body>
+</html>
+

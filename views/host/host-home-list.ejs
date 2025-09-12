@@ -1,0 +1,57 @@
+<%- include('../partials/head') %>
+</head>
+<body class="bg-gradient-to-br from-blue-300 via-white to-gray-500 min-h-screen flex flex-col min-h-screen">
+
+    <%- include('../partials/nav') %>
+
+    <main class="flex-grow flex flex-col items-center justify-center p-5">
+        <h1 class="text-4xl font-bold text-red-600">Hey Host! Here are your homes</h1>
+
+        <ul class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-7 mt-8 w-full max-w-6xl">
+            <% registerHomes.forEach(home => { %>
+                <li class="bg-white shadow-lg rounded-lg overflow-hidden border border-blue-200 hover:scale-110 transition duration-300 ease-in-out">
+                    <!-- House Image -->
+                    <img src="/<%= home.photo %>" alt="House Image" class="w-full h-48 object-cover">
+                    
+                    <!-- Card Content -->
+                    <div class="p-5 text-center bg-[#FBFBFB] cursor-pointer">
+                        <h2 class="text-2xl font-bold text-red-600"><%= home.houseName %></h2>
+                        <p class="text-gray-700 mt-2">🌎 Location: <span class="font-semibold"><%= home.location %></span></p>
+                        <p class="text-gray-700 mt-1">⭐ Rating: <span class="font-semibold"><%= home.rating %></span>/5</p>
+                        <p class="text-gray-800 mt-1">💰 Price: <span class="font-semibold text-red-500">₹ <%= home.price %></span> per night</p>
+        
+                        <!-- Buttons: Details | Edit | Delete -->
+                        <div class="mt-4 flex flex-wrap justify-center gap-3">
+                            <!-- Details -->
+                            <a href="/homes/<%=home._id%>" 
+                               class="bg-emerald-500 hover:bg-emerald-600 text-white font-medium py-2 px-4 rounded-lg shadow-md transition">
+                                📄 Details
+                            </a>
+
+                            <!-- Edit -->
+                            <a href="/host/edit-home/<%=home._id%>?editing=true" 
+                               class="bg-indigo-500 hover:bg-indigo-600 text-white font-medium py-2 px-4 rounded-lg shadow-md transition">
+                                ✏️ Edit
+                            </a>
+
+                            <!-- Delete -->
+                            <form action="/host/delete-home/<%=home._id%>" method="post">
+                                <button class="bg-rose-500 hover:bg-rose-600 text-white font-medium py-2 px-4 rounded-lg shadow-md transition">
+                                    🗑️ Delete
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </li>
+            <% }) %>
+        </ul>
+        
+        <a href="/host/add-home" 
+           class="mt-8 inline-block bg-red-500 hover:bg-red-700 text-white font-bold py-3 px-6 rounded-lg text-lg transition">
+            ➕ Add Home
+        </a>
+    </main>
+
+</body>
+</html>
+

@@ -1,0 +1,68 @@
+<%- include('../partials/head') %>
+
+<body class="bg-gradient-to-br from-blue-300 via-white to-gray-500 min-h-screen">
+  
+<%- include('../partials/nav') %>
+<form id="bookingForm" action="/book/<%= home._id %>" method="POST" class="max-w-xl mx-auto mt-20 bg-[#1B1B1B] bg-opacity-90 p-8 rounded-2xl shadow-xl space-y-6">
+  <h2 class="text-2xl font-bold text-center text-yellow-400 mb-4">📅 Book Your Stay</h2>
+
+  <div>
+    <label for="checkin" class="block text-gray-100 font-semibold mb-2">Check-In Date:</label>
+    <input type="date" id="checkin" name="checkin" required
+      class="border border-gray-300 rounded-lg p-3 w-full focus:outline-none focus:ring-2 focus:ring-gray-200 transition">
+  </div>
+
+  <div>
+    <label for="checkout" class="block text-gray-100 font-semibold mb-2">Check-Out Date:</label>
+    <input type="date" id="checkout" name="checkout" required
+      class="border border-gray-300 rounded-lg p-3 w-full focus:outline-none focus:ring-2 focus:ring-gray-400 transition">
+  </div>
+
+  <div id="priceDisplay" class="hidden text-center text-green-500 text-lg font-bold mt-4 animate-pulse">
+    💰 Total Price: ₹ <span id="totalPriceText"></span>
+  </div>
+
+  <input type="hidden" name="totalPrice" id="totalPriceInput">
+
+  <p id="availabilityMsg" class="text-center text-sm font-semibold text-red-600"></p>
+
+  <button type="submit" id="confirmBtn"
+    class="hidden w-full bg-gradient-to-r from-red-500 to-pink-500 hover:from-red-600 hover:to-pink-600 text-white font-bold py-3 px-6 rounded-xl shadow-lg transition duration-300 ease-in-out">
+    ✅ Confirm Booking
+  </button>
+</form>
+
+
+<script>
+  const checkinInput = document.getElementById("checkin");
+  const checkoutInput = document.getElementById("checkout");
+  const priceDisplay = document.getElementById("priceDisplay");
+  const totalPriceText = document.getElementById("totalPriceText");
+  const confirmBtn = document.getElementById("confirmBtn");
+  const totalPriceInput = document.getElementById("totalPriceInput");
+
+  const perNightPrice = <%= JSON.stringify(home.price) %>;
+
+  function calculateTotal() {
+    const checkin = new Date(checkinInput.value);
+    const checkout = new Date(checkoutInput.value);
+
+    if (checkin && checkout && checkout > checkin) {
+      const diffTime = checkout - checkin;
+      const nights = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+      const total = nights * perNightPrice;
+
+      totalPriceText.innerText = `${total} for ${nights} night(s)`;
+      totalPriceInput.value = total;
+      priceDisplay.classList.remove("hidden");
+      confirmBtn.classList.remove("hidden");
+    } else {
+      priceDisplay.classList.add("hidden");
+      confirmBtn.classList.add("hidden");
+    }
+  }
+
+  checkinInput.addEventListener("change", calculateTotal);
+  checkoutInput.addEventListener("change", calculateTotal);
+</script>
+</body>
