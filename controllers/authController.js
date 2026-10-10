@@ -142,11 +142,13 @@ exports.postSignup = [
 }];
 
 exports.postLogin = async (req,res,next)=>{
-    console.log(req.body);
+  try {
     const {email,password} = req.body;
+    if (!email || !password) return res.status(422).render("auth/login", {
+      pageTitle: "Login", currentPage: "login", isLoggedIn: false,
+      errors: ["Email and password are required"], oldInput: { email: email || "" }, user: {},
+    });
     const user = await User.findOne({email:email});
-    console.log("User found",user);
-    console.log()
     if(!user){
         return res.status(422).render("auth/login",{
             pageTitle: "Login",
@@ -174,10 +176,12 @@ exports.postLogin = async (req,res,next)=>{
         user: req.session.user,
     });
 }
+    await new Promise((resolve, reject) => req.session.regenerate((err) => err ? reject(err) : resolve()));
     req.session.isLoggedIn = true;
-    req.session.user = user;
-    await req.session.save();
+    req.session.user = { _id: user._id, userType: user.userType, firstName: user.firstName };
+    await new Promise((resolve, reject) => req.session.save((err) => err ? reject(err) : resolve()));
     res.redirect("/");
+  } catch (error) { next(error); }
 }
 
 
@@ -187,4 +191,3 @@ exports.postLogout =(req,res,next)=>{
         res.redirect("/login");
     })
 } 
-

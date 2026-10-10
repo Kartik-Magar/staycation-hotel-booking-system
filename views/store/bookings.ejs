@@ -22,7 +22,7 @@
           const end = new Date(booking.endDate);
           const diffInTime = end.getTime() - start.getTime();
           const days = Math.ceil(diffInTime / (1000 * 3600 * 24));
-          const total = days * booking.homeId.price;
+          const total = booking.totalPrice;
       %>
         <tr class="border-b hover:bg-[#1B1B1B] bg-opacity-100 transition duration-200">
           <td class="py-3 px-6 font-medium text-green-600"><%= booking.homeId.houseName %></td>

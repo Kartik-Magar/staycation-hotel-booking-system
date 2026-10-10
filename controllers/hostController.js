@@ -1,134 +1,110 @@
-// local module
-const Home=  require('../model/home');
-const fs = require('fs');
+const Home = require("../model/home");
+const Booking = require("../model/booking");
+const { saveImage, deleteImage } = require("../utils/imageStorage");
 
-// hostRouter
-const getAddHome = (req,res,next)=>{
-    res.render('host/edit-home',{pageTitle: 'Add Home to Airbnb',
-        currentPage: 'addHome',
-        editing: false,
-        isLoggedIn: req.session.isLoggedIn,
-        user: req.session.user,
-    });  
-}
+const renderHomeForm = (req, res, home = null) => res.render("host/edit-home", {
+  home,
+  pageTitle: home ? "Edit Your Home Details" : "Add Home to StayCation",
+  currentPage: home ? "host-homes" : "addHome",
+  editing: Boolean(home),
+  isLoggedIn: true,
+  user: req.session.user,
+});
 
-const getEditHome =(req,res,next)=>{
-    const homeId = req.params.homeId
-    const editing = req.query.editing === "true";
+const getAddHome = (req, res) => renderHomeForm(req, res);
 
-    Home.findById(homeId).then(home => {
-        if(!home){
-            console.log("Home not found for edit");
-            return res.redirect("/host/host-home-list");
-        }
-        
-    console.log(homeId, editing,home)
-    res.render('host/edit-home',{
-        home: home,
-        pageTitle: 'Edit Your Home Details',
-        currentPage: 'host-homes',
-        editing: editing,
-        isLoggedIn: req.session.isLoggedIn,
-        user: req.session.user,
-    }); 
-
-    }); 
-}
-
-const getHostHomes = async (req, res, next) => {
-    try {
-        const registerHomes = await Home.find(); // Wait for data
-        res.render('host/host-home-list', {
-            registerHomes: registerHomes,    
-            pageTitle: 'Host home list',
-            currentPage: 'host-homes',
-            isLoggedIn: req.session.isLoggedIn,
-            user: req.session.user,
-        });
-    } catch (error) {
-        console.error("Error fetching homes:", error);
-        res.status(500).send("Error fetching homes");
-    }
-    console.log(req.url, req.method);
+const getEditHome = async (req, res, next) => {
+  try {
+    const home = await Home.findOne({
+      _id: req.params.homeId,
+      ownerId: req.session.user._id,
+    });
+    if (!home) return res.sendStatus(404);
+    renderHomeForm(req, res, home);
+  } catch (error) { next(error); }
 };
 
+const getHostHomes = async (req, res, next) => {
+  try {
+    const registerHomes = await Home.find({ ownerId: req.session.user._id });
+    res.render("host/host-home-list", {
+      registerHomes,
+      pageTitle: "Your Homes",
+      currentPage: "host-homes",
+      isLoggedIn: true,
+      user: req.session.user,
+    });
+  } catch (error) { next(error); }
+};
 
-const postAddHome = async (req,res,next)=>{
+function validHome(body) {
+  const price = Number(body.price);
+  const rating = Number(body.rating);
+  return body.houseName?.trim() && body.location?.trim() &&
+    Number.isFinite(price) && price > 0 &&
+    Number.isFinite(rating) && rating >= 0 && rating <= 5;
+}
 
-    console.log("Request Body:", req.body);
-
-    const {houseName, price, location, rating,description} = req.body;
-    
-    if(!req.file){
-        return res.status(422).send("File not found");
-    }
-    const photo = req.file.path;
-    const home = new Home({houseName, price, location, rating, photo, description});
-    console.log(req.file);
-    await home.save();
-    console.log("Home save successefully");
-    res.redirect('/host/host-home-list');    
-
-//     home.save()
-//         .then(() => {
-//             console.log("Home saved successfully");
-//             res.redirect('/host/host-home-list');
-//         })
+const postAddHome = async (req, res, next) => {
+  if (!validHome(req.body) || !req.file) return res.sendStatus(422);
+  let photo;
+  try {
+    photo = await saveImage(req.file);
+    await Home.create({
+      houseName: req.body.houseName.trim(),
+      price: Number(req.body.price),
+      location: req.body.location.trim(),
+      rating: Number(req.body.rating),
+      description: req.body.description?.trim(),
+      photo,
+      ownerId: req.session.user._id,
+    });
+    res.redirect("/host/host-home-list");
+  } catch (error) {
+    if (photo) await deleteImage(photo).catch(console.error);
+    next(error);
+  }
 };
 
 const postEditHome = async (req, res, next) => {
+  if (!validHome(req.body)) return res.sendStatus(422);
+  try {
+    const home = await Home.findOne({ _id: req.body.id, ownerId: req.session.user._id });
+    if (!home) return res.sendStatus(404);
+    const oldPhoto = home.photo;
+    home.houseName = req.body.houseName.trim();
+    home.price = Number(req.body.price);
+    home.location = req.body.location.trim();
+    home.rating = Number(req.body.rating);
+    home.description = req.body.description?.trim();
+    if (req.file) home.photo = await saveImage(req.file);
     try {
-        const { id, houseName, price, location, rating, description } = req.body;
-        const home = await Home.findById(id);
-
-        if (!home) {
-            console.error("Home not found");
-            return res.status(404).json({ error: "Home not found" });
-        }
-
-        home.houseName = houseName;
-        home.price = price;
-        home.location = location;
-        home.rating = rating;
-        home.description = description;
-
-        if (req.file) {
-            fs.unlink(home.photo, (err) => {
-                if (err) {
-                    console.error("Error deleting old photo:", err);
-                }
-            });
-            home.photo = req.file.path;
-        }
-
-        await home.save();
-        console.log("Home updated successfully:", home);
-        res.redirect("/host/host-home-list");
-
+      await home.save();
     } catch (error) {
-        console.error("Error while updating:", error);
-        res.status(500).json({ error: "Error updating home" });
+      if (home.photo !== oldPhoto) await deleteImage(home.photo).catch(console.error);
+      throw error;
     }
+    if (home.photo !== oldPhoto) await deleteImage(oldPhoto).catch(console.error);
+    res.redirect("/host/host-home-list");
+  } catch (error) { next(error); }
 };
 
-
-const postDeleteHome = (req,res,next)=>{
-const homeId = req.params.homeId;
-console.log("Came to delete home Id:",homeId);
-Home.findByIdAndDelete(homeId).then((err)=>{
-    if(err){
-        console.log("error came while Deleting: ",err);
+const postDeleteHome = async (req, res, next) => {
+  try {
+    const home = await Home.findOne({
+      _id: req.params.homeId,
+      ownerId: req.session.user._id,
+    });
+    if (!home) return res.sendStatus(404);
+    if (await Booking.exists({ homeId: req.params.homeId })) {
+      return res.status(409).send("This home has bookings and cannot be deleted");
     }
-    res.redirect('/host/host-home-list');    
-})
+    await home.deleteOne();
+    await deleteImage(home.photo).catch(console.error);
+    res.redirect("/host/host-home-list");
+  } catch (error) { next(error); }
 };
 
-
-module.exports ={getAddHome, postAddHome,getHostHomes,getEditHome,postEditHome,postDeleteHome};
-
-// exports.homesController = {               if we exports like this we have to import them {homesController} =require('../controllers/homes').gethomes or .postAddHome
-//     getAddHome,
-//     postAddHome,
-//     getHomes,
-// };
-// exports.registerHomes = registerHomes;     {We Dont have exports registerhome because we are using it in this folder only}
+module.exports = {
+  getAddHome, postAddHome, getHostHomes, getEditHome, postEditHome, postDeleteHome,
+};

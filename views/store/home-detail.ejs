@@ -41,17 +41,16 @@
 
                 <!-- Buttons Section -->
                 <div class="flex justify-center gap-6">
-                <% if(user && user.usertype === "guest"){ %>
-                    <a href="/book/<%= home._id %>" 
-                        class="bg-green-600 hover:bg-green-800 text-white font-bold py-4 px-8 rounded-xl text-xl shadow-lg transition-all duration-300">
-                        📅 Book Now
-                    </a>
-                 <% } %>
                     <a href="/homes" 
                         class="bg-blue-600 hover:bg-blue-900 text-white font-bold py-4 px-6 rounded-xl text-xl shadow-lg transition-all duration-300">
                         🔙 Back to Listings
                     </a>
-                    <%- include('../partials/favourite',{ existingFav: existingFav, home: home })%>
+                    <% if (user && user.userType === "guest") { %>
+                        <a href="/book/<%= home._id %>" class="bg-green-600 hover:bg-green-800 text-white font-bold py-4 px-8 rounded-xl text-xl shadow-lg transition-all duration-300">📅 Book Now</a>
+                        <%- include('../partials/favourite', { existingFav, home }) %>
+                    <% } else if (!user) { %>
+                        <a href="/login" class="bg-green-600 hover:bg-green-800 text-white font-bold py-4 px-8 rounded-xl text-xl shadow-lg transition-all duration-300">Log in to book</a>
+                    <% } %>
                 </div>
             </div>
         </div>

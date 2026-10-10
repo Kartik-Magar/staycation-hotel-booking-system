@@ -22,6 +22,11 @@ const homeSchema = mongoose.Schema({
     required: true,
   },
   description: String,
+  ownerId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "user",
+    index: true,
+  },
 });
 
 module.exports = mongoose.model("Home", homeSchema);

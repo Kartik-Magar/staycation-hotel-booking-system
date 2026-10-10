@@ -53,12 +53,13 @@
                 <input 
                     type="file" 
                     name="photo" 
-                    accept="image/*jpg, image/ipeg, image/png"
-                    multiple
+                    accept="image/jpeg,image/png,image/webp"
                     id="photo" 
+                    aria-describedby="photo-help"
                     class="mt-1 w-full p-3 border rounded-lg focus:ring-2 focus:ring-red-400 focus:outline-none"
                     
-                > 
+                >
+                <p id="photo-help" class="text-sm text-gray-600">JPEG, PNG or WebP, up to 10 MB.<%= editing ? " Leave blank to keep the current photo." : "" %></p>
                 <textarea  
                 name="description"
                 id="description"

@@ -3,11 +3,11 @@ const Home = require("../model/home");
 const User = require("../model/user");
 const mongoose = require("mongoose");
 const Booking = require("../model/booking");
+const { parseBookingDates } = require("../utils/bookingDates");
 
 // Homepage
 const getIndex = async (req, res, next) => {
   try {
-    console.log("session value ", req.session);
     const registerHomes = await Home.find();
     res.render("store/index", {
       registerHomes,
@@ -33,7 +33,7 @@ const getHomes = (req, res, next) => {
       isLoggedIn: req.session.isLoggedIn,
       user: req.session.user,
     });
-  });
+  }).catch(next);
   console.log(req.url, req.method);
 };
 
@@ -59,39 +59,37 @@ const getBookings = async (req, res, next) => {
 
 // Favourites list
 const getFavouriteList = async (req, res, next) => {
-  const userId = req.session.user._id;
-  const user = await User.findById(userId).populate("favourites");
-  res.render("store/favourite-list", {
-    favouriteHomes: user.favourites,
-    pageTitle: "My Favourites",
-    currentPage: "favourites",
-    isLoggedIn: req.session.isLoggedIn,
-    user: req.session.user,
-  });
+  try {
+    const user = await User.findById(req.session.user._id).populate("favourites");
+    res.render("store/favourite-list", {
+      favouriteHomes: user.favourites.filter(Boolean),
+      pageTitle: "My Favourites",
+      currentPage: "favourites",
+      isLoggedIn: req.session.isLoggedIn,
+      user: req.session.user,
+    });
+  } catch (error) { next(error); }
 };
 
 // Add to favourites
 const postAddToFavourite = async (req, res, next) => {
-  const homeId = req.body.id;
-  const userId = req.session.user._id;
-  const user = await User.findById(userId);
-  if (!user.favourites.includes(homeId)) {
-    user.favourites.push(homeId);
-    await user.save();
-  }
-  res.redirect(`/homes/${homeId}`);
+  try {
+    const homeId = req.body.id;
+    if (!mongoose.Types.ObjectId.isValid(homeId)) return res.sendStatus(400);
+    if (!await Home.exists({ _id: homeId })) return res.sendStatus(404);
+    await User.updateOne({ _id: req.session.user._id }, { $addToSet: { favourites: homeId } });
+    res.redirect(`/homes/${homeId}`);
+  } catch (error) { next(error); }
 };
 
 // Remove from favourites
 const postRemoveFromFavourite = async (req, res, next) => {
-  const homeId = req.params.homeId;
-  const userId = req.session.user._id;
-  const user = await User.findById(userId);
-  if (user.favourites.includes(homeId)) {
-    user.favourites = user.favourites.filter((fav) => fav != homeId);
-    await user.save();
-  }
-  res.redirect(`/homes/${homeId}`);
+  try {
+    const homeId = req.params.homeId;
+    if (!mongoose.Types.ObjectId.isValid(homeId)) return res.sendStatus(400);
+    await User.updateOne({ _id: req.session.user._id }, { $pull: { favourites: homeId } });
+    res.redirect(`/homes/${homeId}`);
+  } catch (error) { next(error); }
 };
 
 // Home details
@@ -109,7 +107,7 @@ const getHomeDetails = async (req, res, next) => {
     if (req.session.user) {
       const userId = req.session.user._id;
       const user = await User.findById(userId);
-      existingFav = user.favourites.includes(homeId);
+      existingFav = Boolean(user?.favourites.some((fav) => fav.toString() === homeId));
     }
 
     res.render("store/home-detail", {
@@ -165,35 +163,29 @@ const postBookNow = async (req, res, next) => {
     const userId = req.session.user._id;
     const { checkin, checkout } = req.body;
 
-    if (!checkin || !checkout) {
-      return res.status(400).send("Check-in and Check-out dates are required");
-    }
+    const dates = parseBookingDates(checkin, checkout);
+    if (!dates || !mongoose.Types.ObjectId.isValid(homeId)) return res.status(400).send("Invalid dates or home ID");
+
+    const home = await Home.findById(homeId);
+    if (!home) return res.sendStatus(404);
 
     const existingBooking = await Booking.findOne({
-      userId,
       homeId,
-      $or: [
-        {
-          startDate: { $lt: new Date(checkout) },
-          endDate: { $gt: new Date(checkin) },
-        },
-      ],
+      startDate: { $lt: dates.end },
+      endDate: { $gt: dates.start },
     });
 
     if (existingBooking) {
-      return res.status(400).redirect("/homes");
+      return res.status(409).send("This home is unavailable for the selected dates");
     }
 
-    const totalDays =
-      (new Date(checkout) - new Date(checkin)) / (1000 * 60 * 60 * 24);
-    const home = await Home.findById(homeId);
-    const totalPrice = totalDays * home.price;
+    const totalPrice = dates.nights * home.price;
 
     const booking = new Booking({
       userId,
       homeId,
-      startDate: checkin,
-      endDate: checkout,
+      startDate: dates.start,
+      endDate: dates.end,
       totalPrice,
     });
 
@@ -209,14 +201,13 @@ const checkAvailability = async (req, res) => {
   const { homeId, checkin, checkout } = req.body;
 
   try {
+    const dates = parseBookingDates(checkin, checkout);
+    if (!dates || !mongoose.Types.ObjectId.isValid(homeId)) return res.sendStatus(400);
+    if (!await Home.exists({ _id: homeId })) return res.sendStatus(404);
     const existingBooking = await Booking.findOne({
       homeId,
-      $or: [
-        {
-          startDate: { $lt: new Date(checkout) },
-          endDate: { $gt: new Date(checkin) },
-        },
-      ],
+      startDate: { $lt: dates.end },
+      endDate: { $gt: dates.start },
     });
 
     if (existingBooking) {
