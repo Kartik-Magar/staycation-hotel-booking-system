@@ -90,7 +90,7 @@
             <span class="absolute bottom-0 left-0 w-full h-0.5 bg-yellow-400 scale-x-0 group-hover:scale-x-100 origin-center transition-transform duration-300 ease-out"></span>
             
           </a>
-          <a href="#khfjtd" class="relative group cursor-pointer text-white text-glow transition-colors duration-300 hover:text-yellow-300">Info
+          <a href="#info" class="relative group cursor-pointer text-white text-glow transition-colors duration-300 hover:text-yellow-300">Info
            <span class="absolute bottom-0 left-0 w-full h-0.5 bg-yellow-400 scale-x-0 group-hover:scale-x-100 origin-center transition-transform duration-300 ease-out"></span>
           </a>
           <% if (isLoggedIn) { %>
@@ -210,7 +210,7 @@
       </div>
 
     <!-- Why Choose StayCation Section -->
-    <section class="bg-gradient-to-br from-gray-800 via-gray-700 to-gray-600 py-12">
+    <section id="info" class="bg-gradient-to-br from-gray-800 via-gray-700 to-gray-600 py-12">
       <div class="max-w-7xl mx-auto text-center">
         <h2 class="text-3xl font-semibold text-yellow-500 mb-8 hover:scale-110 transition duration-300 cursor-pointer hover:text-yellow-400">Why Choose StayCation?</h2>
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -230,11 +230,11 @@
           <div class="group bg-white p-6 rounded-lg shadow-xl hover:shadow-2xl transform hover:scale-105 transition duration-300 ease-in-out">
             <div class="inline-block relative">
               <h3 class="text-xl font-semibold text-green-800 group-hover:text-green-600 transition duration-300 ease-in-out cursor-pointer">
-                Verified Hosts
+                Host Listings
               </h3>
               <span class="absolute bottom-0 left-0 w-full h-0.5 bg-green-600 scale-x-0 group-hover:scale-x-100 origin-left transition-transform duration-300 ease-out"></span>
             </div>
-            <p class="mt-4 text-gray-600">All our hosts are carefully verified, ensuring a safe and trustworthy experience.</p>
+            <p class="mt-4 text-gray-600">Explore places listed by hosts and compare their details before booking.</p>
           </div>
     
           <!-- Card 3 -->
@@ -271,9 +271,9 @@
         <div>
           <h3 class="text-xl font-semibold mb-4 text-white">Quick Links</h3>
           <ul class="space-y-2 text-gray-400 text-sm">
-            <li><a href="#" class="hover:text-amber-400 transition">Home</a></li>
+            <li><a href="/" class="hover:text-amber-400 transition">Home</a></li>
             <li><a href="#info" class="hover:text-amber-400 transition">About Us</a></li>
-            <li><a href="#contact" class="hover:text-amber-400 transition">Contact</a></li>
+            <li><a href="#contact-us" class="hover:text-amber-400 transition">Contact</a></li>
             <li><a href="/login" class="hover:text-amber-400 transition">Login</a></li>
             <li><a href="/signup" class="hover:text-amber-400 transition">Sign Up</a></li>
           </ul>
@@ -283,11 +283,11 @@
         <div>
           <h3 class="text-xl font-semibold mb-4 text-white">Top Destinations</h3>
           <ul class="space-y-2 text-gray-400 text-sm">
-            <li><a href="#" class="hover:text-cyan-400 transition">Maldives</a></li>
-            <li><a href="#" class="hover:text-cyan-400 transition">Bali</a></li>
-            <li><a href="#" class="hover:text-cyan-400 transition">Paris</a></li>
-            <li><a href="#" class="hover:text-cyan-400 transition">New York</a></li>
-            <li><a href="#" class="hover:text-cyan-400 transition">Santorini</a></li>
+            <li>Maldives</li>
+            <li>Bali</li>
+            <li>Paris</li>
+            <li>New York</li>
+            <li>Santorini</li>
           </ul>
         </div>
     
@@ -323,27 +323,7 @@
       <!-- Bottom Bar -->
       <div class="mt-12 border-t border-white/10 pt-6 text-sm text-center text-gray-400">
         <div class="flex flex-col md:flex-row justify-between items-center max-w-7xl mx-auto px-6">
-          <p>© 2025 StayCation. All rights reserved.</p>
-          <div class="flex space-x-4 mt-4 md:mt-0">
-            <a href="#" class="hover:text-cyan-400 transition">
-              <!-- Facebook Icon -->
-              <svg class="h-7 w-7" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M22 12a10 10 0 10-11.45 9.95v-7.05H8v-2.9h2.55V9.35c0-2.5 1.5-3.9 3.8-3.9 1.1 0 2.2.2 2.2.2v2.45h-1.25c-1.24 0-1.65.78-1.65 1.58v1.9h2.8l-.45 2.9h-2.35v7.05A10 10 0 0022 12z"/>
-              </svg>
-            </a>
-            <a href="#" class="hover:text-cyan-400 transition">
-              <!-- Twitter Icon -->
-              <svg class="h-7 w-7" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M23.95 4.57a10 10 0 01-2.83.77 4.93 4.93 0 002.17-2.71c-.95.56-2 .97-3.13 1.19A4.92 4.92 0 0016.61 3c-2.73 0-4.94 2.2-4.94 4.92 0 .39.04.77.13 1.13-4.1-.2-7.73-2.16-10.16-5.13a4.87 4.87 0 00-.67 2.48c0 1.7.87 3.2 2.18 4.07a4.9 4.9 0 01-2.23-.62v.06c0 2.38 1.7 4.36 3.95 4.82a4.9 4.9 0 01-2.22.08c.63 1.97 2.45 3.4 4.6 3.45A9.88 9.88 0 012 19.54a13.94 13.94 0 007.56 2.21c9.05 0 14-7.5 14-14v-.63A9.94 9.94 0 0024 4.59z"/>
-              </svg>
-            </a>
-            <a href="#" class="hover:text-cyan-400 transition">
-              <!-- GitHub Icon -->
-              <svg class="h-7 w-7" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M12 2.04c-5.51 0-9.96 4.45-9.96 9.96 0 4.41 2.87 8.17 6.85 9.49.5.09.69-.22.69-.49v-1.7c-2.78.61-3.37-1.34-3.37-1.34-.45-1.15-1.11-1.46-1.11-1.46-.91-.62.07-.61.07-.61 1 .07 1.53 1.03 1.53 1.03.9 1.53 2.36 1.09 2.94.84.09-.65.35-1.09.63-1.34-2.22-.25-4.56-1.11-4.56-4.93 0-1.09.39-1.98 1.03-2.68-.1-.25-.45-1.27.1-2.64 0 0 .84-.27 2.75 1.03a9.6 9.6 0 015 0c1.9-1.3 2.74-1.03 2.74-1.03.56 1.37.21 2.39.1 2.64.64.7 1.03 1.59 1.03 2.68 0 3.83-2.34 4.68-4.57 4.93.36.31.68.93.68 1.87v2.78c0 .27.18.58.7.48a10.02 10.02 0 006.87-9.5c0-5.5-4.46-9.95-9.96-9.95z"/>
-              </svg>
-            </a>
-          </div>
+          <p>© <%= new Date().getFullYear() %> StayCation. All rights reserved.</p>
         </div>
       </div>
     </footer>
