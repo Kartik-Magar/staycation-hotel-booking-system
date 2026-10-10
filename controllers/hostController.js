@@ -38,6 +38,8 @@ const getHostHomes = async (req, res, next) => {
 };
 
 function validHome(body) {
+  if (typeof body.houseName !== "string" || typeof body.location !== "string") return false;
+  if (body.description !== undefined && typeof body.description !== "string") return false;
   const price = Number(body.price);
   const rating = Number(body.rating);
   return body.houseName?.trim() && body.location?.trim() &&
